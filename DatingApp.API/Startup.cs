@@ -28,8 +28,17 @@ namespace DatingApp.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
+
+            // services.AddCors(o =>
+            // o.AddPolicy("CorsPolicy", builder =>
+            //     builder.SetIsOriginAllowed(host => true)
+            //      .AllowAnyMethod()
+            //      .AllowAnyHeader()
+            //      .AllowCredentials()));
+            services.AddCors(o =>
+                o.AddPolicy("CorsPolicy", builder => builder.WithOrigins("http://localhost:4200")));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DatingApp.API", Version = "v1" });
@@ -55,6 +64,8 @@ namespace DatingApp.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DatingApp.API v1"));
             }
 
+            app.UseCors("CorsPolicy");
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
