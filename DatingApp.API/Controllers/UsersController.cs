@@ -1,16 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DatingApp.DatingApp.API.Database;
-using DatingApp.DatingApp.API.Database.Entities;
+using DatingApp.API.Database.Entities;
+using Microsoft.AspNetCore.Authorization;
 
-namespace DatingApp.DatingApp.API.Controllers
+namespace DatingApp.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseApiController
     {
         private readonly DataContext _context;
 
@@ -18,11 +15,24 @@ namespace DatingApp.DatingApp.API.Controllers
         {
             _context = context;
         }
-        
+
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult<IEnumerable<User>> Get()
         {
-            return _context.Users;
+            return Ok(_context.Users);
+        }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public ActionResult<User> Get(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
         }
     }
 }
