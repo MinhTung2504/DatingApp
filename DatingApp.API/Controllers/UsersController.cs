@@ -4,35 +4,38 @@ using Microsoft.AspNetCore.Mvc;
 using DatingApp.DatingApp.API.Database;
 using DatingApp.API.Database.Entities;
 using Microsoft.AspNetCore.Authorization;
+using DatingApp.API.Database.Repositories;
+using DatingApp.API.DTOs;
+using AutoMapper;
 
 namespace DatingApp.API.Controllers
 {
+    [Authorize]
     public class UsersController : BaseApiController
     {
-        private readonly DataContext _context;
 
-        public UsersController(DataContext context)
+        private readonly IUserRepository _userRepository;
+        public UsersController(IUserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
 
         [AllowAnonymous]
         [HttpGet]
         public ActionResult<IEnumerable<User>> Get()
         {
-            return Ok(_context.Users);
+            return Ok(_userRepository.GetMembers());
         }
 
-        [Authorize]
-        [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        [HttpGet("{username}")]
+        public ActionResult<MemberDto> Get(string username)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (user == null)
+            var member = _userRepository.GetMemberByUsername(username);
+            if (member == null)
             {
                 return NotFound();
             }
-            return Ok(user);
+            return Ok(member);
         }
     }
 }
