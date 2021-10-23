@@ -9,9 +9,9 @@ import { UserRegister } from '../_models/user';
 export class HomeComponent implements OnInit {
   isRegisterMode = false;
   user: UserRegister = {
-    username: 'minhtung123',
-    email: 'minhtung123@gmail.com',
-    password: '123456',
+    username: '',
+    email: '',
+    password: '',
   };
   constructor() {}
 

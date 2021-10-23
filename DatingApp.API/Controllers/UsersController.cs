@@ -20,7 +20,6 @@ namespace DatingApp.API.Controllers
             _userRepository = userRepository;
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public ActionResult<IEnumerable<User>> Get()
         {
